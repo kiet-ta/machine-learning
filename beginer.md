@@ -335,7 +335,63 @@ This is how learning becomes real skill.
 
 ---
 
-## 12. The Big Picture (Final Summary)
+## 12. Reinforcement Learning (The Third Type)
+
+*(Note: While Supervised and Unsupervised are the two biggest types, Reinforcement Learning is the famous third pillar of ML).*
+
+### What is Reinforcement Learning?
+
+Reinforcement Learning (RL) is learning by **trial and error**.
+
+There is no dataset with answers (like supervised).
+There is no static data to group (like unsupervised).
+Instead, a program interacts with a world and learns from **consequences**.
+
+---
+
+### The Feedback Loop
+
+Think of training a puppy:
+
+- It performs a trick (**Action**)
+- You give it a treat (**Positive Reward**) or say "No" (**Negative Penalty**)
+- It learns to do the trick to get more treats
+  
+In RL, we use these terms:
+
+- **Agent:** The AI that is learning.
+- **Environment:** The world the agent interacts with (e.g., a maze, a video game).
+- **State:** The current situation the agent is in.
+- **Action:** What the agent decides to do.
+- **Reward:** The score or feedback it gets after the action.
+
+---
+
+### RL vs The Rest
+
+| Task Type           | How It Learns        | Goal                    |
+| ------------------- | -------------------- | ----------------------- |
+| Supervised          | From labeled data    | Predict answers         |
+| Unsupervised        | From unlabeled data  | Find hidden patterns    |
+| Reinforcement       | From trial and error | Maximize total reward   |
+
+---
+
+### Real-World Examples
+
+Reinforcement Learning is behind some of the coolest AI breakthroughs:
+
+- **Game Bots:** AI learning to beat human world champions in chess or Go (AlphaGo).
+- **Robotics:** A robot learning how to walk without falling over.
+- **Self-Driving Cars:** Learning how to stay in the lane and avoid obstacles by rewarding safe driving.
+
+The model learns:
+
+> “When I am in this situation, taking this action gives me the highest score over time.”
+
+***
+
+## 13. The Big Picture (Final Summary)
 
 - Machine learning learns patterns from data
 - Supervised learning has answers
