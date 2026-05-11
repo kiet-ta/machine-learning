@@ -29,6 +29,19 @@
 10. [Epoch and Batch (Dataset Management)](#10-epoch-and-batch-dataset-management)
     - [10.1 Epoch: One Full Pass](#101-epoch-one-full-pass)
     - [10.2 Batch: Small Chunks for GPU Memory](#102-batch-small-chunks-for-gpu-memory)
+11. [Training vs. Inference (Systems Engineering)](#11-training-vs-inference-systems-engineering)
+    - [11.1 What is Training?](#111-what-is-training)
+    - [11.2 What is Inference?](#112-what-is-inference)
+12. [CPU vs. GPU (Architectural Mindset)](#12-cpu-vs-gpu-architectural-mindset)
+    - [12.1 CPU Architecture](#121-cpu-architecture)
+    - [12.2 GPU Architecture](#122-gpu-architecture)
+13. [AI Does NOT "Understand"](#13-ai-does-not-understand)
+    - [13.1 Statistical Correlations](#131-statistical-correlations)
+    - [13.2 LLM Next-Token Prediction](#132-llm-next-token-prediction)
+14. [Architecture Analysis Exercises](#14-architecture-analysis-exercises)
+    - [14.1 Analyze ChatGPT](#141-analyze-chatgpt)
+    - [14.2 Analyze Image Recognition](#142-analyze-image-recognition)
+    - [14.3 Analyze a RAG System](#143-analyze-a-rag-system)
 
 ---
 
@@ -203,11 +216,82 @@ A **Batch** is a small subset of the data processed at once.
 - **Batch Size:** The number of samples processed before updating weights (e.g., 32, 64, 128).
 - **Why?** GPUs have limited VRAM (e.g., 24GB). You cannot load a 2TB dataset into memory, so you load it in small batches.
 
+> **Related Reading:** To understand the difference between **Batch** (Compute) and **Chunk** (Data Retrieval), see: [Compare Chunk vs. Batch](Compare-Chunk-Batch.md)
+
 **The Iterative Cycle:**
 1. Load **Batch**.
 2. **Forward Pass** → **Loss** → **Backpropagation**.
 3. **Update Weights**.
 4. Repeat for all batches until the **Epoch** is complete.
+
+---
+
+## 11. Training vs. Inference (Systems Engineering)
+
+Training and Inference are often separate architectures with different hardware and optimization goals.
+
+### 11.1 What is Training?
+Training is the process where a model learns patterns from a labeled dataset. It requires both a **Forward Pass** (to predict) and a **Backward Pass** (to update weights).
+
+- **Backward Pass:** This is computationally expensive and requires storing intermediate "activations" in GPU memory.
+
+```mermaid
+flowchart TD
+    A[Dataset] --> B[Data Loader] --> C[GPU Training] --> D[Loss/Backprop] --> E[Weight Update] --> F[Checkpoint Saved]
+```
+
+### 11.2 What is Inference?
+Inference is using a trained, "frozen" model to generate predictions. No weight updates occur, and it is much lighter than training.
+
+| Feature | Training | Inference |
+| :--- | :--- | :--- |
+| **Goal** | Learn patterns | Generate predictions |
+| **Weights** | Changing (Mutable) | Frozen (Immutable) |
+| **Hardware** | Heavy GPU Clusters | Edge, CPU, or Single GPU |
+| **Key Metric** | Convergence/Time | Latency/Throughput |
+
+---
+
+## 12. CPU vs. GPU (Architectural Mindset)
+
+### 12.1 CPU Architecture
+A CPU is an expert architect. It is optimized for **complex logic, branching, and sequential execution**. It has a few powerful cores designed to handle difficult, single-threaded tasks.
+
+### 12.2 GPU Architecture
+A GPU is a massive team of 10,000 workers. It is optimized for **Massive Parallel Arithmetic**. It excels at performing the same simple operation (like multiplication) on millions of different data points simultaneously.
+
+**Why GPUs dominate AI:** Deep Learning is essentially large-scale matrix multiplication—a task that fits perfectly with the GPU's parallel nature.
+
+---
+
+## 13. AI Does NOT "Understand"
+
+### 13.1 Statistical Correlations
+AI optimizes for **Statistical Correlations**, not logical understanding. It learns pattern probability mappings (e.g., "whiskers + tail = cat").
+
+### 13.2 LLM Next-Token Prediction
+Large Language Models primarily predict **Next-Token Probabilities**. They generate text by selecting the most likely next word based on the context of previous words.
+
+**Engineering Insight:** Never architect systems assuming AI has human "logic." Always implement validation, guardrails, and fallback systems.
+
+---
+
+## 14. Architecture Analysis Exercises
+
+### 14.1 Analyze ChatGPT (Distributed Inference)
+- **Input:** User prompt → Tokenizer → Vector Embedding.
+- **Process:** Transformer layers compute attention between tokens.
+- **Output:** Next-token probability distribution → Streaming response.
+
+### 14.2 Analyze Image Recognition (Hierarchical Pipeline)
+- **Input:** Image resize → Tensor conversion (e.g., 224x224x3).
+- **Process:** CNN/ViT extracts hierarchical features (Edges → Shapes → Objects).
+- **Output:** Classification label (e.g., "Cat").
+
+### 14.3 Analyze a RAG System (Retrieval + Generation)
+- **Step 1:** Chunk documents and store as vectors in a Vector DB.
+- **Step 2:** Retrieve semantically similar chunks based on user query.
+- **Step 3:** Inject retrieved chunks into the LLM prompt context for an grounded answer.
 
 ---
 
